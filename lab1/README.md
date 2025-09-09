@@ -21,5 +21,8 @@ gateway padrão: 192.168.11.1
 
 - Roteador:
 interface gigabitethernet 0/0/0: 192.168.10.0  
-interface gigabitethernet 0/0/1: 192.168.11.0  
+interface gigabitethernet 0/0/1: 192.168.11.0 
+
+![topologia](topo.png)
+
 
