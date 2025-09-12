@@ -12,6 +12,8 @@
 
 ---
 
+![Cenario](cenario.png)i
+
 ## Configuração do Switch
 
 ### 1. Criação das VLANs
