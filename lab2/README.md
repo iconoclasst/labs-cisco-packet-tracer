@@ -1,8 +1,75 @@
-# Configuração de VLANs e Roteamento Inter-VLAN
+### **Sub-rede 1 (Vendas)**
+- **Endereço de Rede:** `192.168.10.0/24`
+- **Dispositivos:** `pc0`, `pc1`
+- **IPs dos Dispositivos:** `192.168.10.15`, `192.168.10.16`
+- **Portas do Switch:** `FastEthernet 0/1`, `0/2`
 
-Este guia descreve a configuração de VLANs em um switch e o roteamento entre elas utilizando um roteador. A topologia considera duas sub-redes distintas com hosts atribuídos. A Sub-rede 1 (VLAN Vendas) possui rede `192.168.10.0/24` com PC0 (`192.168.10.15`) e PC1 (`192.168.10.16`) conectados às portas FastEthernet 0/1 e 0/2. A Sub-rede 2 (VLAN DevOps) possui rede `192.168.11.0/24` com PC2 (`192.168.11.15`), LPT1 (`192.168.11.14`) e DNSS (`192.168.11.13`) conectados às portas FastEthernet 0/11, 0/12 e 0/13.
+### **Sub-rede 2 (DevOps)**
+- **Endereço de Rede:** `192.168.11.0/24`
+- **Dispositivos:** `pc2`, `lpt1`, `DNSS`
+- **IPs dos Dispositivos:** `192.168.11.15`, `192.168.11.14`, `192.168.11.13`
+- **Portas do Switch:** `FastEthernet 0/11`, `0/12`, `0/13`
 
-No switch, acesse a CLI e execute: `enable`, `configure terminal`, `hostname Switch_vlan`, `vlan 10`, `name vendas`, `vlan 20`, `name devops`, `end` e `write memory`. Para designar as portas às VLANs, use: `enable`, `configure terminal`, `interface fa0/1-10`, `switchport access vlan 10`, `exit`, `interface fa0/11-20`, `switchport access vlan 20`, `end` e `write memory`. Verifique a configuração com `show vlan brief`.
+---
 
-Para permitir comunicação entre VLANs, conecte o roteador à porta GigabitEthernet0/1 do switch e configure como trunk: `enable`, `configure terminal`, `interface GigabitEthernet0/1`, `switchport mode trunk`, `switchport trunk allowed vlan 10,20` e `exit`. No roteador, crie subinterfaces: `enable`, `show ip interface brief`, `configure terminal`, `interface GigabitEthernet0/0/1`, `no shutdown`, `exit`, `interface GigabitEthernet0/0/1.10`, `encapsulation dot1Q 10`, `ip address 192.168.10.1 255.255.255.0`, `exit`, `interface GigabitEthernet0/0/1.20`, `encapsulation dot1Q 20`, `ip address 192.168.11.1 255.255.255.0` e `exit`. Configure o default gateway nos hosts: para a rede Vendas `192.168.10.1` e para a rede DevOps `192.168.11.1`. Após estas configurações, será possível a comunicação entre hosts da mesma VLAN e entre VLANs diferentes através do roteador.
+## Configuração do Switch
 
+### 1. Criação das VLANs
+
+Use os seguintes comandos na **CLI (Command Line Interface)** do switch:
+
+```bash
+> enable
+> configure terminal
+> hostname Switch_vlan
+> vlan 10
+> name vendas
+> vlan 20
+> name devops
+> end
+> write memory
+
+> enable
+> configure terminal
+> interface range fa0/1-10
+> switchport mode access
+> switchport access vlan 10
+> exit
+> interface range fa0/11-20
+> switchport mode access
+> switchport access vlan 20
+> end
+> write memory
+
+## Configuração do Roteamento Inter-VLANs  
+Neste ponto, os dispositivos estão separados em dois domínios de broadcast. Pings entre dispositivos da mesma VLAN funcionarão, mas entre VLANs diferentes, não. Para resolver isso, configuraremos o roteamento.  
+
+### 1. Configuração da Porta Trunk no Switch
+- Conecte o roteador ao switch usando a porta GigabitEthernet 0/1 do switch.
+> enable
+> configure terminal
+> interface GigabitEthernet0/1
+> switchport mode trunk
+> switchport trunk allowed vlan 10,20
+> exit
+
+### 2. Configuração do Roteador (Router-on-a-stick)
+> enable
+> show ip interface brief
+> configure t
+> interface GigabitEthernet0/0/1
+> no shutdown
+> exit
+> interface GigabitEthernet0/0/1.10
+> encapsulation dot1Q 10
+> ip address 192.168.10.1 255.255.255.0
+> exit
+> interface GigabitEthernet0/0/1.20
+> encapsulation dot1Q 20
+> ip address 192.168.11.1 255.255.255.0
+> end
+> write memory
+
+Após isso, definimos em cada host o default gateway
+- Para a rede vendas, é 192.168.10.1
+- Para a rede devops, é 192.168.11.1
