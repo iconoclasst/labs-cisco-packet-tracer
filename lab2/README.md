@@ -21,50 +21,52 @@
 Use os seguintes comandos na **CLI (Command Line Interface)** do switch:
 
 ```bash
-> enable
-> configure terminal
-> hostname Switch_vlan
-> vlan 10
-> name vendas
+> enable (privilégio de execução)
+> configure terminal (configurar dispositivo)
+> hostname Switch_vlan (nome que quiser)
+> vlan 10 (id da vlan)
+> name vendas (nome da vlan com id escolhido)
 > vlan 20
 > name devops
-> end
-> write memory
+> end (fim da configuração)
+> write memory (salvar configuração)
+
+### Designar portas 
+### Voltar para o modo global e usar os comandos:
 
 > enable
 > configure terminal
-> interface range fa0/1-10
-> switchport mode access
-> switchport access vlan 10
-> exit
-> interface range fa0/11-20
-> switchport mode access
-> switchport access vlan 20
-> end
-> write memory
+> interface range fa0/1-10 (escolher o range de portas)
+> switchport mode access vlan 10 (range de portas vira do tipo 'access' na vlan 10)
+> exit (sai da configuração da vlan 10)
+> interface range fa0/11-20 (range de portas)
+> switchport mode access vlan 20 (tipo access para range de portas da vlan 20)
+> end (fim da configuração)
+> write memory (salvar configuração)
 
 ## Configuração do Roteamento Inter-VLANs  
 Neste ponto, os dispositivos estão separados em dois domínios de broadcast. Pings entre dispositivos da mesma VLAN funcionarão, mas entre VLANs diferentes, não. Para resolver isso, configuraremos o roteamento.  
 
 ### 1. Configuração da Porta Trunk no Switch
-- Conecte o roteador ao switch usando a porta GigabitEthernet 0/1 do switch.
+- Conecte o roteador ao switch usando a porta GigabitEthernet 0/1 do switch e do roteador.
 > enable
 > configure terminal
-> interface GigabitEthernet0/1
-> switchport mode trunk
-> switchport trunk allowed vlan 10,20
-> exit
+> interface GigabitEthernet0/1 (selecionar porta)
+> switchport mode trunk (definir porta como trunk)
+> switchport trunk allowed vlan 10,20 (permitir tráfego dessas das vlans 10 e 20)
+> exit (sair, ué)
 
 ### 2. Configuração do Roteador (Router-on-a-stick)
+- Essa configuração permite a criação de duas sub-interfaces na porta GigabitEthernet0/0/1 do roteador. Uma interface possuirá dois endereços para receber o tráfego das vlans.  
 > enable
-> show ip interface brief
-> configure t
-> interface GigabitEthernet0/0/1
-> no shutdown
-> exit
-> interface GigabitEthernet0/0/1.10
-> encapsulation dot1Q 10
-> ip address 192.168.10.1 255.255.255.0
+> show ip interface brief (mostrar interfaces do roteador)
+> configure t 
+> interface GigabitEthernet0/0/1 (seleciona a interface)
+> no shutdown (ativa a interface)
+> exit 
+> interface GigabitEthernet0/0/1.10 (define a primeira vlan)
+> encapsulation dot1Q 10 (define o protocolo dot1Q para marcar quadros ethernet com o vlan id 10)
+> ip address 192.168.10.1 255.255.255.0 (define ip e mask para a subinterface)
 > exit
 > interface GigabitEthernet0/0/1.20
 > encapsulation dot1Q 20
