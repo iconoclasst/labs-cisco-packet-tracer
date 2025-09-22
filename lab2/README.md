@@ -77,3 +77,17 @@ Neste ponto, os dispositivos estão separados em dois domínios de broadcast. Pi
 Após isso, definimos em cada host o default gateway
 - Para a rede vendas, é 192.168.10.1
 - Para a rede devops, é 192.168.11.1
+
+# Parte 2 (habilitando DNS interno entre as vlans)
+- Na vlan devops (id 20), temos um pc, um laptop e um servidor. No servidor, clicamos em serviços e depois habilitamos o DNS (Domain Name Service).  
+- Esse servidor fará o papel de servidor DNS interno. Basicamente, ele fará as máquinas reconhecerem umas as outras pelo endereço IP ou por um nome escolhido.  
+## Primeiro teste  
+Antes de tudo, cada dispositivo nas redes devem ter o campo "DNS Server" preenchido com o IP do servidor DNS. Para testar o serviço, habilite o servidor DNS e adicione uma entrada na tela mostrada na imagem:
+![tela dns](entrada_dns.png)i  
+- Adicione um nome e o endereço de cada dispositivo.  
+Para testar se funcionou, adicione uma entrada para o pc de devops e tente fazer um ping com o laptop utilizando o nome do pc. Exemplo: se o nome do pc for pc-devops, no terminal do laptop utilize ping pc-devops.  
+Após a configuração geral, cada máquina enxerga todas as outras por nome e IP.  
+
+
+
+  
