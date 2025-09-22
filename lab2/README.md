@@ -84,7 +84,7 @@ Após isso, definimos em cada host o default gateway
 ## Primeiro teste  
 Antes de tudo, cada dispositivo nas redes devem ter o campo "DNS Server" preenchido com o IP do servidor DNS. Para testar o serviço, habilite o servidor DNS e adicione uma entrada na tela mostrada na imagem:  
 
-![tela dns](entrada_dns.png)  
+![dns](tela.png)  
 
 - Adicione um nome e o endereço de cada dispositivo.  
 Para testar se funcionou, adicione uma entrada para o pc de devops e tente fazer um ping com o laptop utilizando o nome do pc. Exemplo: se o nome do pc for pc-devops, no terminal do laptop utilize ping pc-devops.  
